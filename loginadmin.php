@@ -2,32 +2,33 @@
 session_start();
 $db = mysqli_connect('localhost', 'root', '', 'hukumsiap');
 
-// Cek login
 if (isset($_POST['login'])) {
-    // Mengambil email dan password
     $email = mysqli_real_escape_string($db, $_POST['email']);
-    $password = mysqli_real_escape_string($db, $_POST['password']);
+    $password = $_POST['password']; // Tidak perlu real_escape_string untuk password saat verifikasi hash
 
-    // Mendapatkan user berdasarkan email
     $query = "SELECT * FROM login WHERE email='$email'";
     $result = mysqli_query($db, $query);
     $user = mysqli_fetch_assoc($result);
 
-    // Verifikasi password
     if ($user) {
-        if ($password === $user['password']) {
+        // Cek apakah password cocok?
+        $is_password_valid = password_verify($password, $user['password']) || ($password === $user['password']);
+
+        if ($is_password_valid) {
             if ($user['peran'] === 'Admin') {
                 $_SESSION['user_email'] = $user['email'];
                 $_SESSION['user_id'] = $user['iduser'];
                 $_SESSION['peran'] = $user['peran'];
-                header("Location: indexadmin.php"); // Jika login berhasil, arahkan ke index.php
+                header("Location: indexadmin.php");
                 exit();
             } else {
-                $error_message = "Anda bukan admin."; // Jika login berhasil, arahkan ke index.php
+                $error_message = "Anda bukan admin.";
             }
         } else {
-            $error_message = "Email atau password salah."; // Pesan error saat email/password salah
+            $error_message = "Email atau password salah.";
         }
+    } else {
+        $error_message = "Email atau password salah.";
     }
 }
 ?>
