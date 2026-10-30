@@ -22,7 +22,6 @@ if (isset($_GET['id'])) {
     exit;
 }
 
-// Proses update data pengguna
 if (isset($_POST['submit'])) {
     $username = htmlspecialchars($_POST['username']);
     $email = htmlspecialchars($_POST['email']);
@@ -30,12 +29,11 @@ if (isset($_POST['submit'])) {
 
     // Periksa apakah password diubah
     if (!empty($_POST['password'])) {
-        $password = htmlspecialchars($_POST['password']);
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
         $query_update = "UPDATE login SET username = '$username', email = '$email', peran = '$peran', password = '$password' WHERE iduser = $id";
     } else {
         $query_update = "UPDATE login SET username = '$username', email = '$email', peran = '$peran' WHERE iduser = $id";
     }
-
     if (mysqli_query($conn, $query_update)) {
         header("Location: ../indexadmin.php");
         exit;
