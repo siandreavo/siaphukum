@@ -3,13 +3,12 @@ require '../function.php';
 $conn = koneksi();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = htmlspecialchars($_POST['username']);
+    $username = htmlspecialchars($_POST['username']); 
     $email = htmlspecialchars($_POST['email']);
-    $password = htmlspecialchars($_POST['password']);
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $peran = htmlspecialchars($_POST['peran']);
 
-    $query = "INSERT INTO login (username, email, password, peran) VALUES ('$username', '$email', '$password', '$peran')";
-    
+    $query = "INSERT INTO login (username, email, password, peran) VALUES ('$username', '$email', '$password', '$peran')"; //[cite: 13]
     if (mysqli_query($conn, $query)) {
         echo "<script>
                 alert('Pengguna berhasil ditambahkan!');
