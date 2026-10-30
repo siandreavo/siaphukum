@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Cek Login
 if (isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit();
@@ -10,23 +9,28 @@ if (isset($_SESSION['user_id'])) {
 $db = mysqli_connect('localhost', 'root', '', 'hukumsiap');
 
 if (isset($_POST['login'])) {
-    // Mengambil email dan password
     $email = mysqli_real_escape_string($db, $_POST['email']);
-    $password = mysqli_real_escape_string($db, $_POST['password']);
+    $password = $_POST['password'];
 
-    // Mendapatkan user berdasarkan email
     $query = "SELECT * FROM login WHERE email='$email'";
     $result = mysqli_query($db, $query);
     $user = mysqli_fetch_assoc($result);
 
-    // Verifikasi password
-    if ($user && $password === $user['password']) {
-        $_SESSION['user_email'] = $user['email'];
-        $_SESSION['user_id'] = $user['iduser']; 
-        header("Location: index.php"); // Jika login berhasil, arahkan ke index.php
-        exit();
+    if ($user) {
+        // Cek apakah password cocok?
+        $is_password_valid = password_verify($password, $user['password']) || ($password === $user['password']);
+
+        if ($is_password_valid) {
+            $_SESSION['user_email'] = $user['email'];
+            $_SESSION['user_id'] = $user['iduser'];
+            $_SESSION['peran'] = $user['peran'];
+            header("Location: index.php");
+            exit();
+        } else {
+            $error_message = "Email atau password salah.";
+        }
     } else {
-        $error_message = "Email atau password salah."; // Jika login gagal, muncul pesan error
+        $error_message = "Email atau password salah.";
     }
 }
 ?>
