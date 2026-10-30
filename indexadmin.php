@@ -80,7 +80,7 @@ $result_login = mysqli_query($conn, $query_login);
                                         echo "<td>" . htmlspecialchars($row['email']) . "</td>";
                                         echo "<td>" . htmlspecialchars($row['peran']) . "</td>";
                                         echo "<td align='center'>";
-                                        echo "<a href='hapususer.php?id=" . $row['iduser'] . "' class='btn btn-danger mb-1'>Hapus</a> ";
+                                        echo "<a href='hapus/hapususer.php?id=" . $row['iduser'] . "' class='btn btn-danger mb-1'>Hapus</a> ";
                                         echo "<a href='edit/edituser.php?id=" . $row['iduser'] . "' class='btn btn-warning mb-1'>Edit</a>";
                                         echo "</td>";
                                         echo "</tr>";
